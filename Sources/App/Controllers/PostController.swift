@@ -9,6 +9,7 @@ final class PostController: ResourceRepresentable {
     func create(request: Request) throws -> ResponseRepresentable {
         var post = try request.post()
         try post.save()
+
         return post
     }
 
@@ -18,6 +19,7 @@ final class PostController: ResourceRepresentable {
 
     func delete(request: Request, post: Post) throws -> ResponseRepresentable {
         try post.delete()
+
         return JSON([:])
     }
 
@@ -31,11 +33,13 @@ final class PostController: ResourceRepresentable {
         var post = post
         post.content = new.content
         try post.save()
+
         return post
     }
 
     func replace(request: Request, post: Post) throws -> ResponseRepresentable {
         try post.delete()
+
         return try create(request: request)
     }
 
@@ -54,7 +58,12 @@ final class PostController: ResourceRepresentable {
 
 extension Request {
     func post() throws -> Post {
-        guard let json = json else { throw Abort.badRequest }
-        return try Post(node: json)
+        guard let body = body.bytes,
+              let json = try? JSON(bytes: body),
+              let content = json["content"]?.string else {
+            throw Abort.badRequest
+        }
+
+        return Post(content: content)
     }
 }

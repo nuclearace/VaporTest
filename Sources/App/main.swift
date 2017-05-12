@@ -1,6 +1,11 @@
 import Vapor
+import VaporMySQL
 
 let drop = Droplet()
+
+try drop.addProvider(VaporMySQL.Provider.self)
+
+drop.preparations.append(Post.self)
 
 drop.get { req in
     return try drop.view.make("welcome", [
@@ -8,6 +13,9 @@ drop.get { req in
     ])
 }
 
-drop.resource("posts", PostController())
+registerAPIs(droplet: drop)
+registerViews(droplet: drop)
+
+//drop.resource("post", PostController())
 
 drop.run()
