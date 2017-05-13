@@ -8,8 +8,9 @@ try drop.addProvider(VaporMySQL.Provider.self)
 drop.preparations.append(Post.self)
 drop.preparations.append(User.self)
 drop.preparations.append(AddUserToPosts.self)
+drop.preparations.append(AddPasswordFieldToUser.self)
 
-drop.get { req in
+drop.get {req in
     return try drop.view.make("welcome", [
     	"message": drop.localization[req.lang, "welcome", "title"]
     ])
@@ -17,7 +18,5 @@ drop.get { req in
 
 registerAPIs(droplet: drop)
 registerViews(droplet: drop)
-
-//drop.resource("post", PostController())
 
 drop.run()

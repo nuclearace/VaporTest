@@ -2,6 +2,7 @@
 // Created by Erik Little on 5/12/17.
 //
 
+import CryptoSwift
 import Foundation
 import Vapor
 import HTTP
@@ -15,7 +16,7 @@ class UserController : ResourceRepresentable {
         var user = try request.user()
         try user.save()
 
-        return user
+        return try user.makeJSON()
     }
 
     func show(request: Request, user: User) throws -> ResponseRepresentable {
@@ -53,6 +54,14 @@ class UserController : ResourceRepresentable {
 
 extension Request {
     func user() throws -> User {
-        throw Abort.custom(status: .notImplemented, message: "Creating users is not implemented yet")
+        guard let body = body.bytes,
+              let json = try? JSON(bytes: body),
+              let username = json["username"]?.string,
+              let email = json["email"]?.string,
+              let password = json["password"]?.string else {
+            throw Abort.badRequest
+        }
+
+        return User(username: username, email: email, password: password)
     }
 }

@@ -3,15 +3,16 @@
  */
 
 (function() {
-    window.submitPost = function() {
+    window.saveUser = () => {
         $.ajax({
-            url: '/api/post/',
+            url: '/api/users/new/',
             data: JSON.stringify({
-                content: $('#content').val(),
-                user: 1
+                username: $('#username').val(),
+                email: $('#email').val(),
+                password: $('#password').val(),
             }),
             type: 'application/json',
             method: 'POST'
         });
-    };
+    }
 })();
