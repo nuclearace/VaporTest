@@ -1,8 +1,13 @@
+import Auth
+import VaporRedis
 import Vapor
 import VaporMySQL
 
+let redis = try RedisCache(address: "127.0.0.1", port: 6379)
 let drop = Droplet()
+let auth = AuthMiddleware(user: User.self, cache: redis)
 
+drop.middleware.append(auth)
 try drop.addProvider(VaporMySQL.Provider.self)
 
 drop.preparations.append(Post.self)

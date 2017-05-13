@@ -2,18 +2,32 @@
 // Created by Erik Little on 5/12/17.
 //
 
+import Auth
 import CryptoSwift
 import Foundation
 import Vapor
 import HTTP
 
 class UserController : ResourceRepresentable {
+    func login(request: Request) throws -> ResponseRepresentable {
+        guard let body = request.body.bytes,
+              let json = try? JSON(bytes: body),
+              let username = json["username"]?.string,
+              let password = json["password"]?.string else {
+            throw Abort.badRequest
+        }
+
+        try request.auth.login(APIKey(id: username, secret: password))
+
+        return "Logged in!"
+    }
+
     func index(request: Request) throws -> ResponseRepresentable {
         return try User.all().makeNode().converted(to: JSON.self)
     }
 
     func create(request: Request) throws -> ResponseRepresentable {
-        var user = try request.user()
+        var user = try request.rawUser()
         try user.save()
 
         return try user.makeJSON()
@@ -53,7 +67,7 @@ class UserController : ResourceRepresentable {
 }
 
 extension Request {
-    func user() throws -> User {
+    func rawUser() throws -> User {
         guard let body = body.bytes,
               let json = try? JSON(bytes: body),
               let username = json["username"]?.string,

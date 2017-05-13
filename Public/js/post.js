@@ -6,10 +6,7 @@
     window.submitPost = function() {
         $.ajax({
             url: '/api/post/',
-            data: JSON.stringify({
-                content: $('#content').val(),
-                user: 1
-            }),
+            data: JSON.stringify({ content: $('#content').val() }),
             type: 'application/json',
             method: 'POST'
         });

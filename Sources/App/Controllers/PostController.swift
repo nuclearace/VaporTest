@@ -2,6 +2,16 @@ import Vapor
 import HTTP
 
 final class PostController : ResourceRepresentable {
+    func viewPosts(request: Request, user: User) throws -> ResponseRepresentable {
+        guard let reqUser = request.user() else { throw Abort.badRequest }
+
+        guard user.id == reqUser.id else {
+            throw Abort.custom(status: .forbidden, message: "You are not authorized to view this user's posts")
+        }
+
+        return JSON(Node.array(try user.posts().map({ try $0.makeNode() })))
+    }
+
     func index(request: Request) throws -> ResponseRepresentable {
         return try Post.all().makeNode().converted(to: JSON.self)
     }
@@ -62,8 +72,7 @@ extension Request {
         guard let body = body.bytes,
               let json = try? JSON(bytes: body),
               let content = json["content"]?.string,
-              let userId = json["user"]?.int,
-              let user = try User.find(userId) else {
+              let user = user() else {
             throw Abort.badRequest
         }
 
