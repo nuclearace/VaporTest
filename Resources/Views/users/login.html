@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Login</title>
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"
             integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
@@ -14,12 +14,18 @@
     <script src="/js/login.js"></script>
 </head>
 <body>
-<form class="form-group" method="post">
-    Username: <input class="form-control" title="username" id="username" type="text" required>
-    <br>
-    Password: <input class="form-control" title="password" id="password" type="password" required>
-    <br>
-</form>
-<button class="btn" id="createUser" onclick="login()">Login</button>
+<div class="container">
+    <div class="row">
+        <div class="col-md-2 col-md-offset-5">
+            <form class="form-group">
+                Username: <input class="form-control" title="username" id="username" type="text" required>
+                <br>
+                Password: <input class="form-control" title="password" id="password" type="password" required>
+                <br>
+            </form>
+            <button class="btn" id="loginUser()" onclick="login()">Login</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Post Something</title>
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"
             integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
@@ -18,8 +18,17 @@
           crossorigin="anonymous">
 </head>
 <body>
-<title>My App</title>
-<input name="content" title="content" id="content" type="text">
-<button id="postSubmit" onclick="submitPost()">Submit Post</button>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-5 col-lg-offset-5">Say Something!</div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+            <textarea class="form-control" name="content" title="content" id="content" rows="5"></textarea>
+            <br>
+            <button class="btn" id="postSubmit" onclick="submitPost()">Submit Post</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -22,6 +22,12 @@ class UserController : ResourceRepresentable {
         return "Logged in!"
     }
 
+    func logout(request: Request) throws -> ResponseRepresentable {
+        try request.auth.logout()
+
+        return ""
+    }
+
     func index(request: Request) throws -> ResponseRepresentable {
         return try User.all().makeNode().converted(to: JSON.self)
     }

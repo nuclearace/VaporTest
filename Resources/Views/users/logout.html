@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create User</title>
+    <title>Logout</title>
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"
             integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
@@ -11,21 +11,13 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
           crossorigin="anonymous">
-    <script src="/js/new_user.js"></script>
+    <script src="/js/logout.js"></script>
 </head>
 <body>
 <div class="container">
     <div class="row">
         <div class="col-md-2 col-md-offset-5">
-            <form class="form-group">
-                Username: <input class="form-control" title="username" id="username" type="text" required>
-                <br>
-                Email: <input class="form-control" title="email" id="email" type="email" required>
-                <br>
-                Password: <input class="form-control" title="password" id="password" type="password" required>
-                <br>
-            </form>
-            <button class="btn" id="createUser" onclick="saveUser()">Create</button>
+            <button class="btn" id="logout" onclick="logoutUser()">Logout</button>
         </div>
     </div>
 </div>

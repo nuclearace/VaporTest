@@ -115,6 +115,12 @@ extension User : Auth.User {
     }
 }
 
+extension User {
+    func posts() throws -> [Post] {
+        return try children("user_id", Post.self).all()
+    }
+}
+
 extension Request {
     func user() -> User? {
         guard let user = try? auth.user() as? User else { return nil }

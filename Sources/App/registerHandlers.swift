@@ -25,6 +25,7 @@ func registerAPIs(droplet: Droplet) {
 
         userGroup.post("new", handler: uc.create)
         userGroup.post("login", handler: uc.login)
+        userGroup.post("logout", handler: uc.logout)
     }
 }
 
@@ -42,6 +43,10 @@ func registerViews(droplet: Droplet) {
 
         userGroup.get("login") {req in
             return try droplet.view.make("users/login.html")
+        }
+
+        userGroup.grouped(protect).get("logout") {req in
+            return try droplet.view.make("users/logout.html")
         }
     }
 }

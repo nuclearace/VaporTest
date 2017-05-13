@@ -10,5 +10,7 @@
             type: 'application/json',
             method: 'POST'
         });
+
+        $('#content').val('');
     };
 })();

@@ -50,9 +50,3 @@ extension Post : Preparation {
 
     }
 }
-
-extension User {
-    func posts() throws -> [Post] {
-        return try children("user_id", Post.self).all()
-    }
-}
