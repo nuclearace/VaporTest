@@ -16,14 +16,19 @@
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-md-2 col-md-offset-5">
+        <div class="col-lg-3 col-lg-offset-5">
             <form class="form-group">
                 Username: <input class="form-control" title="username" id="username" type="text" required>
                 <br>
                 Password: <input class="form-control" title="password" id="password" type="password" required>
                 <br>
             </form>
-            <button class="btn" id="loginUser()" onclick="login()">Login</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-lg-offset-5">
+            <button class="btn" id="login" onclick="login()">Login</button>
+            <button class="btn" id="create" onclick="create()">Create User</button>
         </div>
     </div>
 </div>

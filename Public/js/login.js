@@ -16,5 +16,9 @@
                 window.location = '/post/create';
             }
         });
-    }
+    };
+
+    window.create = () => {
+        window.location = '/users/new';
+    };
 })();

@@ -1,5 +1,6 @@
 import Auth
 import VaporRedis
+import HTTP
 import Vapor
 import VaporMySQL
 
@@ -17,9 +18,11 @@ drop.preparations.append(AddPasswordFieldToUser.self)
 drop.preparations.append(AddTimestampToPosts.self)
 
 drop.get {req in
-    return try drop.view.make("welcome", [
-    	"message": drop.localization[req.lang, "welcome", "title"]
-    ])
+    if req.user() == nil {
+        return Response(redirect: "/users/login")
+    } else {
+        return Response(redirect: "/post/create")
+    }
 }
 
 registerAPIs(droplet: drop)
