@@ -37,6 +37,18 @@ extension User : Auth.User {
         }
     }
 
+    private func checkPassword(_ password: String) -> Bool {
+        guard let pw = self.pw else { return false }
+
+        let passwordComponents = pw.components(separatedBy: "$")
+
+        guard passwordComponents.count == 2 else { return false }
+
+        let (salt, hash) = (passwordComponents[0], passwordComponents[1])
+
+        return hash == User.createSaltedPassword(salt: salt, password: password)
+    }
+
     static func register(credentials: Credentials) throws -> Auth.User {
         throw AuthError.invalidCredentials
     }

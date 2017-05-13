@@ -55,18 +55,6 @@ final class User : Model {
     static func createSaltedPassword(salt: String, password: String) -> String {
         return (salt + password).sha3(.sha512)
     }
-
-    func checkPassword(_ password: String) -> Bool {
-        guard let pw = self.pw else { return false }
-
-        let passwordComponents = pw.components(separatedBy: "$")
-
-        guard passwordComponents.count == 2 else { return false }
-
-        let (salt, hash) = (passwordComponents[0], passwordComponents[1])
-
-        return hash == User.createSaltedPassword(salt: salt, password: password)
-    }
 }
 
 extension User : Preparation {
