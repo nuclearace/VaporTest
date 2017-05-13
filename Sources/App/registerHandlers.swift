@@ -30,7 +30,7 @@ func registerAPIs(droplet: Droplet) {
 
 func registerViews(droplet: Droplet) {
     droplet.group("post") {postGroup in
-        postGroup.get("create") {req in
+        postGroup.grouped(protect).get("create") {req in
             return try droplet.view.make("post.html")
         }
     }
