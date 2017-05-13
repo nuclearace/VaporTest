@@ -6,7 +6,10 @@
     window.logoutUser = () => {
         $.ajax({
             url: '/api/users/logout/',
-            method: 'POST'
-        })
+            method: 'POST',
+            success: () => {
+                window.location = '/users/login';
+            }
+        });
     }
 })();

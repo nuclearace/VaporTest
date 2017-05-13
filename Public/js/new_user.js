@@ -12,7 +12,10 @@
                 password: $('#password').val(),
             }),
             type: 'application/json',
-            method: 'POST'
+            method: 'POST',
+            success: () => {
+                window.location = '/post/create'
+            }
         });
     }
 })();

@@ -19,7 +19,7 @@ final class UserController : ResourceRepresentable {
 
         try request.auth.login(APIKey(id: username, secret: password))
 
-        return "Logged in!"
+        return ""
     }
 
     func logout(request: Request) throws -> ResponseRepresentable {
@@ -35,6 +35,7 @@ final class UserController : ResourceRepresentable {
     func create(request: Request) throws -> ResponseRepresentable {
         var user = try request.rawUser()
         try user.save()
+        try request.auth.login(Identifier(id: user.id!))
 
         return try user.makeJSON()
     }
