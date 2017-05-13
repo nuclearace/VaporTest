@@ -10,11 +10,13 @@
 
         if (parsed['type'] !== 1) { return; }
 
-        let row = $('<tr/>');
+        let content = parsed['message']['content'];
+        let id = parsed['message']['id'];
+        let row = $('<tr/>').attr('id', `msg-${id}`);
         let time = moment(parsed['message']['timestamp']);
 
         row.append($('<td/>').text(time.format("MMMM Do YYYY, h:mm:ss a"))).css('width', '100%');
-        row.append($('<td/>').text(parsed['message']['content'])).css('width', '100%');
+        row.append($('<td/>').text(content)).css('width', '100%');
 
         $('#messageBuffer').append(row);
     };
