@@ -8,7 +8,7 @@ import Foundation
 import Vapor
 import HTTP
 
-class UserController : ResourceRepresentable {
+final class UserController : ResourceRepresentable {
     func login(request: Request) throws -> ResponseRepresentable {
         guard let body = request.body.bytes,
               let json = try? JSON(bytes: body),
