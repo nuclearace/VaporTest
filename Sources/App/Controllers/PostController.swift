@@ -20,6 +20,8 @@ final class PostController : ResourceRepresentable {
         var post = try request.post()
         try post.save()
 
+        Gateway.shared.post(message: try String(bytes: post.makePostMessage().serialize()))
+
         return post
     }
 
@@ -34,9 +36,7 @@ final class PostController : ResourceRepresentable {
     }
 
     func clear(request: Request) throws -> ResponseRepresentable {
-        try Post.query().delete()
-
-        return JSON([])
+        throw Abort.custom(status: .notImplemented, message: "")
     }
 
     func update(request: Request, post: Post) throws -> ResponseRepresentable {

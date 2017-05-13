@@ -7,7 +7,6 @@ import Foundation
 import HTTP
 import Vapor
 
-
 extension User : Auth.User {
     enum UserAuthError : Error {
         case badPass

@@ -50,3 +50,20 @@ func registerViews(droplet: Droplet) {
         }
     }
 }
+
+func registerWebSocket(droplet: Droplet) {
+    droplet.socket("ws") {req, ws in
+        try background {
+            while ws.state == .open {
+                try? ws.ping()
+                drop.console.wait(seconds: 10)
+            }
+        }
+
+        Gateway.shared.add(ws)
+
+        ws.onClose = {ws, code, reason, clean in
+            Gateway.shared.remove(ws)
+        }
+    }
+}

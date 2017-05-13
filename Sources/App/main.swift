@@ -14,6 +14,7 @@ drop.preparations.append(Post.self)
 drop.preparations.append(User.self)
 drop.preparations.append(AddUserToPosts.self)
 drop.preparations.append(AddPasswordFieldToUser.self)
+drop.preparations.append(AddTimestampToPosts.self)
 
 drop.get {req in
     return try drop.view.make("welcome", [
@@ -23,5 +24,6 @@ drop.get {req in
 
 registerAPIs(droplet: drop)
 registerViews(droplet: drop)
+registerWebSocket(droplet: drop)
 
 drop.run()
