@@ -11,6 +11,7 @@
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
     <script src="/js/post.js"></script>
+    <script src="/js/moment.min.js"></script>
 
     <link rel="stylesheet" href="/styles/app.css">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -20,13 +21,20 @@
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-lg-5 col-lg-offset-5">Say Something!</div>
+        <div class="col-lg-8 col-lg-offset-2"  sytle="overflow: auto">
+            <table id="messageBuffer" class="table" style="width: 100%">
+                <tr>
+                    <th>Time</th>
+                    <th>Message</th>
+                </tr>
+            </table>
+        </div>
     </div>
     <div class="row">
         <div class="col-lg-6 col-lg-offset-3">
-            <textarea class="form-control" name="content" title="content" id="content" rows="5"></textarea>
+            <textarea class="form-control" name="content" title="content" id="content" rows="3"></textarea>
             <br>
-            <button class="btn" id="postSubmit" onclick="submitPost()">Submit Post</button>
+            <button class="btn" id="postSubmit" onclick="submitPost()">Send</button>
         </div>
     </div>
 </div>

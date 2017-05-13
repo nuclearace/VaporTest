@@ -3,15 +3,23 @@
  */
 
 (function() {
-    window.ws = new WebSocket("ws://127.0.0.1:8181/ws");
+    let ws = new WebSocket("ws://127.0.0.1:8181/ws");
 
     ws.onmessage = function(msg) {
-        console.log(msg);
+        let parsed = JSON.parse(msg.data);
+
+        if (parsed['type'] !== 1) { return; }
+
+        let row = $('<tr/>');
+        let time = moment(parsed['message']['timestamp']);
+
+        row.append($('<td/>').text(time.format("MMMM Do YYYY, h:mm:ss a"))).css('width', '100%');
+        row.append($('<td/>').text(parsed['message']['content'])).css('width', '100%');
+
+        $('#messageBuffer').append(row);
     };
 
-    ws.onopen = function(event) {
-        console.log('Connected')
-    };
+    window.ws = ws;
 
     window.submitPost = function() {
         $.ajax({
