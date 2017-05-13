@@ -6,10 +6,12 @@
     console.log('hello');
 
     window.submitPost = function() {
-        console.log('adfadfad');
         $.ajax({
             url: '/api/post/',
-            data: JSON.stringify({ content: $('#content').val() }),
+            data: JSON.stringify({
+                content: $('#content').val(),
+                user: 1
+            }),
             type: 'application/json',
             method: 'POST'
         });

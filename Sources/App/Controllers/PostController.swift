@@ -1,7 +1,7 @@
 import Vapor
 import HTTP
 
-final class PostController: ResourceRepresentable {
+final class PostController : ResourceRepresentable {
     func index(request: Request) throws -> ResponseRepresentable {
         return try Post.all().makeNode().converted(to: JSON.self)
     }
@@ -25,6 +25,7 @@ final class PostController: ResourceRepresentable {
 
     func clear(request: Request) throws -> ResponseRepresentable {
         try Post.query().delete()
+
         return JSON([])
     }
 
@@ -60,10 +61,12 @@ extension Request {
     func post() throws -> Post {
         guard let body = body.bytes,
               let json = try? JSON(bytes: body),
-              let content = json["content"]?.string else {
+              let content = json["content"]?.string,
+              let userId = json["user"]?.int,
+              let user = try User.find(userId) else {
             throw Abort.badRequest
         }
 
-        return Post(content: content)
+        return Post(content: content, user: user)
     }
 }

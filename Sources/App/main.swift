@@ -6,6 +6,8 @@ let drop = Droplet()
 try drop.addProvider(VaporMySQL.Provider.self)
 
 drop.preparations.append(Post.self)
+drop.preparations.append(User.self)
+drop.preparations.append(AddUserToPosts.self)
 
 drop.get { req in
     return try drop.view.make("welcome", [
