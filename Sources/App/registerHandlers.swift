@@ -43,7 +43,7 @@ func registerViews(droplet: Droplet) {
 
         userGroup.get("login") {req in
             guard req.user() == nil else {
-                return Response(redirect: "/post/create/")
+                return Response(redirect: "/post/create")
             }
 
             return try droplet.view.make("users/login.html")

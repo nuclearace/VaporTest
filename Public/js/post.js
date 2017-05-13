@@ -16,7 +16,7 @@
         let time = moment(parsed['message']['timestamp']);
 
         row.append($('<td/>').text(time.format("MMMM Do YYYY, h:mm:ss a"))).css('width', '100%');
-        row.append($('<td/>').text(content)).css('width', '100%');
+        row.append($('<td/>').text(content)).css('width', '100%').css('word-wrap', 'normal');
 
         $('#messageBuffer').append(row);
     };
