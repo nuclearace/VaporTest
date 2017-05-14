@@ -3,7 +3,6 @@
 //
 
 import Auth
-import CryptoSwift
 import Foundation
 import Vapor
 import HTTP

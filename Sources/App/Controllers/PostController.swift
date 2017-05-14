@@ -2,18 +2,8 @@ import Vapor
 import HTTP
 
 final class PostController : ResourceRepresentable {
-    func viewPosts(request: Request, user: User) throws -> ResponseRepresentable {
-        guard let reqUser = request.user() else { throw Abort.badRequest }
-
-        guard user.id == reqUser.id else {
-            throw Abort.custom(status: .forbidden, message: "You are not authorized to view this user's posts")
-        }
-
-        return JSON(Node.array(try user.posts().map({ try $0.makeNode() })))
-    }
-
-    func index(request: Request) throws -> ResponseRepresentable {
-        return try Post.all().makeNode().converted(to: JSON.self)
+    func clear(request: Request) throws -> ResponseRepresentable {
+        throw Abort.custom(status: .notImplemented, message: "")
     }
 
     func create(request: Request) throws -> ResponseRepresentable {
@@ -25,18 +15,34 @@ final class PostController : ResourceRepresentable {
         return post
     }
 
-    func show(request: Request, post: Post) throws -> ResponseRepresentable {
-        return post
-    }
-
     func delete(request: Request, post: Post) throws -> ResponseRepresentable {
         try post.delete()
 
         return JSON([:])
     }
 
-    func clear(request: Request) throws -> ResponseRepresentable {
-        throw Abort.custom(status: .notImplemented, message: "")
+    func index(request: Request) throws -> ResponseRepresentable {
+        return try Post.all().makeNode().converted(to: JSON.self)
+    }
+
+    func postsForUser(request: Request, user: User) throws -> Node {
+        guard let reqUser = request.user() else { throw Abort.badRequest }
+
+        guard user.is(otherUser: reqUser) else {
+            throw Abort.custom(status: .forbidden, message: "You are not authorized to view this user's posts")
+        }
+
+        return try Node.array(user.posts().map({ try $0.makeNode() }))
+    }
+
+    func replace(request: Request, post: Post) throws -> ResponseRepresentable {
+        try post.delete()
+
+        return try create(request: request)
+    }
+
+    func show(request: Request, post: Post) throws -> ResponseRepresentable {
+        return post
     }
 
     func update(request: Request, post: Post) throws -> ResponseRepresentable {
@@ -48,10 +54,8 @@ final class PostController : ResourceRepresentable {
         return post
     }
 
-    func replace(request: Request, post: Post) throws -> ResponseRepresentable {
-        try post.delete()
-
-        return try create(request: request)
+    func viewPosts(request: Request, user: User) throws -> ResponseRepresentable {
+        return try JSON(postsForUser(request: request, user: user))
     }
 
     func makeResource() -> Resource<Post> {

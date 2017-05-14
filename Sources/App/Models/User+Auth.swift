@@ -48,6 +48,10 @@ extension User : Auth.User {
         return hash == User.createSaltedPassword(salt: salt, password: password)
     }
 
+    func `is`(otherUser: User) -> Bool {
+        return otherUser.id == id
+    }
+
     static func register(credentials: Credentials) throws -> Auth.User {
         throw AuthError.invalidCredentials
     }

@@ -4,22 +4,28 @@
     <title>My App</title>
 
     <link href="https://fonts.googleapis.com/css?family=Quicksand:400,700,300" rel="stylesheet">
-    <link rel="stylesheet" href="/styles/app.css">
-    <link rel="stylesheet" href="/styles/app.css">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
           crossorigin="anonymous">
 }
 
 #export("body") {
-    <table class="table">
-        <tr>
-            <th>Post</th>
-        </tr>
-        #loop(posts, "post") {
-            <tr>
-                <td>#(post.content)</td>
-            </tr>
-        }
-    </table>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2"  style="height: 300px; overflow: auto">
+            <table class="table" style="width: 100%">
+                <tr>
+                    <th style="width: 30%">Time</th>
+                    <th style="width: 100%">Message</th>
+                </tr>
+                #loop(posts, "post") {
+                <tr>
+                    <td>#(post.timestamp)</td>
+                    <td style="word-wrap: normal">#(post.content)</td>
+                </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
 }

@@ -19,10 +19,7 @@ func registerAPIs(droplet: Droplet) {
     }
 
     droplet.grouped("api").group("users") {userGroup in
-        userGroup.grouped(protect).get(User.self, "posts") {req, user in
-            return try pc.viewPosts(request: req, user: user)
-        }
-
+        userGroup.grouped(protect).get(User.self, "posts", handler: pc.viewPosts)
         userGroup.post("new", handler: uc.create)
         userGroup.post("login", handler: uc.login)
         userGroup.post("logout", handler: uc.logout)
@@ -39,6 +36,14 @@ func registerViews(droplet: Droplet) {
     droplet.group("users") {userGroup in
         userGroup.get("new") {req in
             return try droplet.view.make("users/new.html")
+        }
+
+        userGroup.grouped(protect).get(User.self, "posts") {req, user in
+            let posts = try pc.postsForUser(request: req, user: user)
+
+            return try droplet.view.make("userPosts", [
+                "posts": posts
+            ])
         }
 
         userGroup.get("login") {req in
