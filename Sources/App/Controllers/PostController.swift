@@ -66,6 +66,10 @@ extension Request {
             throw Abort.badRequest
         }
 
-        return Post(content: content, user: user)
+        let trimmedContent = content.trimmingCharacters(in: .whitespaces)
+
+        guard trimmedContent != "" else { throw Abort.badRequest }
+
+        return Post(content: trimmedContent, user: user)
     }
 }

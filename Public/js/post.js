@@ -12,13 +12,14 @@
 
         let content = parsed['message']['content'];
         let id = parsed['message']['id'];
-        let row = $('<tr/>').attr('id', `msg-${id}`);
+        let row = $('<tr/>').attr('id', `msg-${id}`).css('width', '100%').css('word-wrap', 'normal');
         let time = moment(parsed['message']['timestamp']);
 
-        row.append($('<td/>').text(time.format("MMMM Do YYYY, h:mm:ss a"))).css('width', '100%');
-        row.append($('<td/>').text(content)).css('width', '100%').css('word-wrap', 'normal');
+        row.append($('<td/>').text(time.format("MMMM Do YYYY, h:mm:ss a")));
+        row.append($('<td/>').text(content));
 
         $('#messageBuffer').append(row);
+        $('#messageContainer').animate({ scrollTop: $('#messageBuffer tr:last').position().top }, 0);
     };
 
     window.ws = ws;
