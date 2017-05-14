@@ -21,7 +21,7 @@ final class User : Model {
         self.id = nil
         self.username = username
         self.email = email
-        self.pw = User.createSaltedHash(password: password)
+        self.pw = User.createSaltedPassword(password: password)
     }
 
     init(node: Node, in context: Context) throws {
@@ -46,13 +46,13 @@ final class User : Model {
                      "email": .string(email)])
     }
 
-    static func createSaltedHash(password: String) -> String {
+    static func createSaltedPassword(password: String) -> String {
         let salt = UUID().uuidString.sha256()
 
-        return salt + "$" + createSaltedPassword(salt: salt, password: password)
+        return salt + "$" + createSaltedHash(salt: salt, password: password)
     }
 
-    static func createSaltedPassword(salt: String, password: String) -> String {
+    static func createSaltedHash(salt: String, password: String) -> String {
         return (salt + password).sha3(.sha512)
     }
 }

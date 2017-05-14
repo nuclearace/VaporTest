@@ -45,7 +45,7 @@ extension User : Auth.User {
 
         let (salt, hash) = (passwordComponents[0], passwordComponents[1])
 
-        return hash == User.createSaltedPassword(salt: salt, password: password)
+        return hash == User.createSaltedHash(salt: salt, password: password)
     }
 
     func `is`(otherUser: User) -> Bool {
