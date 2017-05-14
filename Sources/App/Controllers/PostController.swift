@@ -25,16 +25,6 @@ final class PostController : ResourceRepresentable {
         return try Post.all().makeNode().converted(to: JSON.self)
     }
 
-    func postsForUser(request: Request, user: User) throws -> Node {
-        guard let reqUser = request.user() else { throw Abort.badRequest }
-
-        guard user.is(otherUser: reqUser) else {
-            throw Abort.custom(status: .forbidden, message: "You are not authorized to view this user's posts")
-        }
-
-        return try Node.array(user.posts().map({ try $0.makeNode() }))
-    }
-
     func replace(request: Request, post: Post) throws -> ResponseRepresentable {
         try post.delete()
 
@@ -52,10 +42,6 @@ final class PostController : ResourceRepresentable {
         try post.save()
 
         return post
-    }
-
-    func viewPosts(request: Request, user: User) throws -> ResponseRepresentable {
-        return try JSON(postsForUser(request: request, user: user))
     }
 
     func makeResource() -> Resource<Post> {
