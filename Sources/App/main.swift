@@ -21,7 +21,7 @@ drop.get {req in
     if req.user() == nil {
         return Response(redirect: "/users/login")
     } else {
-        return Response(redirect: "/post/create")
+        return Response(redirect: "/wall")
     }
 }
 

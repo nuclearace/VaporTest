@@ -27,10 +27,8 @@ func registerAPIs(droplet: Droplet) {
 }
 
 func registerViews(droplet: Droplet) {
-    droplet.group("post") {postGroup in
-        postGroup.grouped(protect).get("create") {req in
-            return try droplet.view.make("post.html")
-        }
+    droplet.grouped(protect).get("wall") {req in
+        return try droplet.view.make("post.html")
     }
 
     droplet.group("users") {userGroup in
@@ -48,7 +46,7 @@ func registerViews(droplet: Droplet) {
 
         userGroup.get("login") {req in
             guard req.user() == nil else {
-                return Response(redirect: "/post/create")
+                return Response(redirect: "/wall")
             }
 
             return try droplet.view.make("users/login.html")

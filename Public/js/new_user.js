@@ -14,7 +14,7 @@
             type: 'application/json',
             method: 'POST',
             success: () => {
-                window.location = '/post/create'
+                window.location = '/wall'
             }
         });
     }
