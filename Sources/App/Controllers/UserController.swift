@@ -36,7 +36,15 @@ final class UserController {
             throw Abort(.forbidden, reason: "You are not authorized to view this user's posts")
         }
 
+        let cacheKey = try Post.cacheKey(forUser: user)
+
+        if let cachedPosts = try redisCache.get(cacheKey) {
+            return JSON(node: cachedPosts)
+        }
+
         let userPosts = try user.posts.all().map({ try $0.makeJSON() })
+
+        try redisCache.set(cacheKey, userPosts, expiration: Date(timeIntervalSinceNow: 30))
 
         return .array(userPosts)
     }

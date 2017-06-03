@@ -4,6 +4,9 @@
 
 import Dispatch
 import Foundation
+import RedisProvider
+
+public let redisCache = try! RedisCache(hostname:"127.0.0.1", port: 6379)
 
 private var _df: DateFormatter?
 

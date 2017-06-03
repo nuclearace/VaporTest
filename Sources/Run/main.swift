@@ -22,8 +22,7 @@ import Sessions
 let config = try Config()
 try config.setup()
 
-private let redis = try RedisCache(hostname:"127.0.0.1", port: 6379)
-private let sessionsMiddleware = SessionsMiddleware(CacheSessions(redis))
+private let sessionsMiddleware = SessionsMiddleware(CacheSessions(redisCache))
 private let persistMiddleware = PersistMiddleware(User.self)
 private let fileMiddleware = try FileMiddleware(config: config)
 

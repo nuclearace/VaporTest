@@ -22,6 +22,10 @@ final class Post : Model, Timestampable {
         self.poster = user
     }
 
+    static func cacheKey(forUser user: User) throws -> String {
+        return try "posts:\(user.id.converted(to: Int.self, in: nil))"
+    }
+
     func makePostMessage() throws -> JSON {
         // TODO Move the API knowledge else where
 
