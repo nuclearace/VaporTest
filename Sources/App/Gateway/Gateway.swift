@@ -1,5 +1,5 @@
 //
-// Created by Erik Little on 5/13/17.
+// Created by Erik Little on 6/3/17.
 //
 
 import Dispatch
@@ -18,9 +18,29 @@ final class Gateway : Lockable {
         protect {
             sockets.append(socket)
         }
+
+        pingSocket(socket)
+    }
+
+    func pingSocket(_ socket: WebSocket) {
+        protect {
+            guard sockets.contains(where: { $0 === socket}) else { return }
+
+            do {
+                try socket.ping()
+            } catch {
+                print("Error pinging socket")
+            }
+
+            queue.asyncAfter(deadline: DispatchTime.now() + 10) {
+                self.pingSocket(socket)
+            }
+        }
     }
 
     func post(message: String) {
+        print("sending message")
+
         queue.async {
             let sockets = self.get(self.sockets)
 
@@ -28,7 +48,7 @@ final class Gateway : Lockable {
                 do {
                     try socket.send(message)
                 } catch {
-                    drop.console.error("Error sending post \(message)")
+                    print("Error")
                 }
             }
         }

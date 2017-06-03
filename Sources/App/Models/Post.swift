@@ -1,80 +1,70 @@
-import Vapor
-import Fluent
-import FluentMySQL
+//
+// Created by Erik Little on 5/21/17.
+//
+
 import Foundation
+import FluentProvider
+import MySQLProvider
 
-final class Post : Model {
-    var id: Node?
-    var content: String
-    var userId: Node
-    var timestamp: Date
+final class Post : Model, Timestampable {
+    let content: String
+    let poster: User
 
-    var exists = false
+    let storage = Storage()
 
-    init(content: String, user: User) {
-        self.id = nil
-        self.content = content
-        self.userId = user.id!
-        self.timestamp = Date()
+    required init(row: Row) throws {
+        content = try row.get("content")
+        poster = try User.find(row.get("user_id") as Int)!
     }
 
-    init(node: Node, in context: Context) throws {
-        id = try node.extract("id")
-        content = try node.extract("content")
-        userId = try node.extract("user_id")
-
-        if let unix = node["timestamp"]?.double {
-            timestamp = Date(timeIntervalSince1970: unix)
-        } else if let raw = node["timestamp"]?.string {
-            guard let timestamp = dateFormatter.date(from: raw) else { throw PostError.dateNotSupported }
-
-            self.timestamp = timestamp
-        } else {
-            throw PostError.dateNotSupported
-        }
+    init(content: String, user: User) {
+        self.content = content
+        self.poster = user
     }
 
     func makePostMessage() throws -> JSON {
         // TODO Move the API knowledge else where
 
-        return try JSON(["type": 1, "message": makeNodeAnon()])
+        return try JSON(["type": 1, "message": makeJSONAnon()])
     }
 
-    func makeNodeAnon() throws -> Node {
-        return try Node(node: [
-            "id": id,
-            "content": content,
-            "timestamp": dateFormatter.string(from: timestamp)
-        ])
+    func makeJSONAnon() throws -> JSON {
+        var fullJSON = try makeJSON()
+
+        fullJSON["poster_id"] = nil
+
+        return fullJSON
     }
 
-    func makeNode() throws -> Node {
-        return try Node(node: [
-            "id": id,
-            "content": content,
-            "user_id": userId,
-            "timestamp": dateFormatter.string(from: timestamp)
-        ])
+    func makeJSON() throws -> JSON {
+        let postId = try id.converted(to: Int.self, in: nil)
+        let posterId = try poster.id.converted(to: Int.self, in: nil)
+
+        return JSON(["id": .number(.int(postId)),
+                     "poster_id": .number(.int(posterId)),
+                     "content": .string(content),
+                     "timestamp": .string(dateFormatter.string(from: createdAt!))
+                    ])
     }
 
-    func makeNode(context: Context) throws -> Node {
-        return try makeNode()
+    func makeRow() throws -> Row {
+        var row = Row()
+
+        try row.set("content", content)
+        try row.set("user_id", poster.id)
+
+        return row
     }
 }
 
 extension Post : Preparation {
-    static func prepare(_ database: Database) throws {
-        try database.create("posts") {post in
-            post.id()
-            post.longText("content")
+    class func prepare(_ database: Database) throws {
+        try database.create(Post.self) {builder in
+            builder.id()
+            builder.foreignId(for: User.self)
+            builder.longText("content")
         }
     }
 
-    static func revert(_ database: Database) throws {
-
-    }
-}
-
-enum PostError : Error {
-    case dateNotSupported
+    class func revert(_ database: Database) throws { }
 }

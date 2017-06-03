@@ -1,49 +1,44 @@
 //
-// Created by Erik Little on 5/12/17.
+// Created by Erik Little on 5/21/17.
 //
 
-import Auth
-import CryptoSwift
-import Fluent
 import Foundation
-import HTTP
-import Vapor
+import FluentProvider
+import CryptoSwift
 
-final class User : Model {
-    var id: Node?
-    var username = ""
-    var email = ""
-    var pw: String? = nil
+public final class User : Model {
+    public let email: String
+    public let username: String
 
-    var exists = false
+    let pw: String
+
+    public let storage = Storage()
+
+    public required init(row: Row) throws {
+        email = try row.get("email")
+        pw = try row.get("pw")
+        username = try row.get("username")
+    }
 
     init(username: String, email: String, password: String) {
-        self.id = nil
         self.username = username
         self.email = email
         self.pw = User.createSaltedPassword(password: password)
     }
 
-    init(node: Node, in context: Context) throws {
-        id = try node.extract("id")
-        username = try node.extract("username")
-        email = try node.extract("email")
-        pw = try node.extract("pw")
-    }
+    public func makeRow() throws -> Row {
+        var row = Row()
 
-    func makeNode(context: Context) throws -> Node {
-        return try Node(node: [
-            "id": id,
-            "username": username,
-            "email": email,
-            "pw": pw
-        ])
+        try row.set("email", email)
+        try row.set("pw", pw)
+        try row.set("username", username)
+
+        return row
     }
 
     func makeJSON() throws -> JSON {
-        return JSON(["id": id!,
-                     "username": .string(username),
-                     "email": .string(email)])
+        return JSON(["email": .string(email),
+                     "username": .string(username)])
     }
 
     static func createSaltedPassword(password: String) -> String {
@@ -58,19 +53,20 @@ final class User : Model {
 }
 
 extension User : Preparation {
-    static func prepare(_ database: Database) throws {
-        try database.create("users") {user in
-            user.id()
-            user.string("username", unique: true)
-            user.string("email", unique: true)
+    public class func prepare(_ database: Database) throws {
+        try database.create(User.self) {builder in
+            builder.id()
+            builder.string("email", length: 256)
+            builder.string("pw", length: 512)
+            builder.string("username", length: 30)
         }
     }
 
-    static func revert(_ database: Database) throws { }
+    public class func revert(_ database: Database) throws { }
 }
 
 extension User {
-    func posts() throws -> [Post] {
-        return try children("user_id", Post.self).all()
+    var posts: Children<User, Post> {
+        return children()
     }
 }

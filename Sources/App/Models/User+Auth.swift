@@ -1,44 +1,27 @@
 //
-// Created by Erik Little on 5/13/17.
+// Created by Erik Little on 5/21/17.
 //
 
-import Auth
-import Foundation
-import HTTP
+import AuthProvider
 import Vapor
 
-extension User : Auth.User {
-    enum UserAuthError : Error {
-        case badPass
-        case notFound
-    }
+enum AuthError : Error {
+    case badPassword
+    case userNotFound
+}
 
-    private static func authenticate(username: String, password: String) throws -> User {
-        guard let user = try User.query().filter(User.self, "username", .equals, username).first() else {
-            throw UserAuthError.notFound
+extension User : PasswordAuthenticatable {
+    public class func authenticate(_ password: Password) throws -> User {
+        guard let user = try User.makeQuery().filter(User.self, "username", .equals, password.username).first() else {
+            throw AuthError.userNotFound
         }
 
-        guard user.checkPassword(password) else { throw UserAuthError.badPass }
+        guard user.checkPassword(password.password) else { throw AuthError.badPassword }
 
         return user
     }
 
-    static func authenticate(credentials: Credentials) throws -> Auth.User {
-        switch credentials {
-        case let api as APIKey:
-            return try authenticate(username: api.id, password: api.secret)
-        case let ident as Identifier:
-            guard let user = try User.find(ident.id) else { throw UserAuthError.notFound }
-
-            return user
-        default:
-            throw AuthError.invalidCredentials
-        }
-    }
-
     private func checkPassword(_ password: String) -> Bool {
-        guard let pw = self.pw else { return false }
-
         let passwordComponents = pw.components(separatedBy: "$")
 
         guard passwordComponents.count == 2 else { return false }
@@ -51,16 +34,12 @@ extension User : Auth.User {
     func `is`(otherUser: User) -> Bool {
         return otherUser.id == id
     }
-
-    static func register(credentials: Credentials) throws -> Auth.User {
-        throw AuthError.invalidCredentials
-    }
 }
 
-extension Request {
-    func user() -> User? {
-        guard let user = try? auth.user() as? User else { return nil }
+extension User: SessionPersistable { }
 
-        return user
+extension Request {
+    func user() throws -> User {
+        return try auth.assertAuthenticated(User.self)
     }
 }

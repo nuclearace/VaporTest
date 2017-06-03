@@ -1,88 +1,50 @@
 //
-// Created by Erik Little on 5/12/17.
+// Created by Erik Little on 6/3/17.
 //
 
-import Auth
+import AuthProvider
 import Foundation
 import Vapor
-import HTTP
 
-final class UserController : ResourceRepresentable {
-    func clear(request: Request) throws -> ResponseRepresentable {
-        throw Abort.custom(status: .notImplemented, message: "Clearing users not supported")
-    }
-
-    func create(request: Request) throws -> ResponseRepresentable {
-        var user = try request.rawUser()
+final class UserController {
+    static func create(request: Request) throws -> ResponseRepresentable {
+        let user = try request.rawUser()
         try user.save()
-        try request.auth.login(Identifier(id: user.id!))
+
+        try request.auth.authenticate(user, persist: true)
 
         return try user.makeJSON()
     }
 
-    func delete(request: Request, user: User) throws -> ResponseRepresentable {
-        throw Abort.custom(status: .notImplemented, message: "Deleting users not supported")
-    }
-
-    func index(request: Request) throws -> ResponseRepresentable {
-        return try User.all().makeNode().converted(to: JSON.self)
-    }
-
-    func login(request: Request) throws -> ResponseRepresentable {
-        guard let body = request.body.bytes,
-              let json = try? JSON(bytes: body),
-              let username = json["username"]?.string,
-              let password = json["password"]?.string else {
-            throw Abort.badRequest
-        }
-
-        try request.auth.login(APIKey(id: username, secret: password))
+    static func login(request: Request) throws -> ResponseRepresentable {
+        _ = try request.auth.assertAuthenticated(User.self)
 
         return ""
     }
 
-    func logout(request: Request) throws -> ResponseRepresentable {
-        try request.auth.logout()
+    static func logout(request: Request) throws -> ResponseRepresentable {
+        try request.auth.unauthenticate()
 
         return ""
     }
 
-    func postsForUser(request: Request, user: User) throws -> Node {
-        guard let reqUser = request.user() else { throw Abort.badRequest }
+    static func postsForUser(request: Request) throws -> JSON {
+        guard let reqUser = try? request.auth.assertAuthenticated(User.self) else { throw Abort.badRequest }
+        let user = try request.parameters.next(User.self)
 
         guard user.is(otherUser: reqUser) else {
-            throw Abort.custom(status: .forbidden, message: "You are not authorized to view this user's posts")
+            throw Abort(.forbidden, reason: "You are not authorized to view this user's posts")
         }
 
-        return try Node.array(user.posts().map({ try $0.makeNode() }))
+        let userPosts = try user.posts.all().map({ try $0.makeJSON() })
+
+        print(userPosts)
+
+        return .array(userPosts)
     }
 
-    func replace(request: Request, user: User) throws -> ResponseRepresentable {
-        throw Abort.custom(status: .notImplemented, message: "Replacing users not supported")
-    }
-
-    func show(request: Request, user: User) throws -> ResponseRepresentable {
-        return user
-    }
-
-    func update(request: Request, user: User) throws -> ResponseRepresentable {
-        throw Abort.custom(status: .notImplemented, message: "Updating users not supported")
-    }
-
-    func viewPosts(request: Request, user: User) throws -> ResponseRepresentable {
-        return try JSON(postsForUser(request: request, user: user))
-    }
-
-    func makeResource() -> Resource<User> {
-        return Resource(
-            index: index,
-            store: create,
-            show: show,
-            replace: replace,
-            modify: update,
-            destroy: delete,
-            clear: clear
-        )
+    static func viewPosts(request: Request) throws -> ResponseRepresentable {
+        return try JSON(postsForUser(request: request))
     }
 }
 

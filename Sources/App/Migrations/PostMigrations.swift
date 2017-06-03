@@ -1,26 +1,16 @@
 //
-// Created by Erik Little on 5/12/17.
+// Created by Erik Little on 6/3/17.
 //
 
 import Foundation
-import Vapor
-import Fluent
-import FluentMySQL
+import FluentProvider
+import MySQLProvider
 
-struct AddUserToPosts : Preparation {
+struct AddTimestampToPost : Preparation {
     static func prepare(_ database: Database) throws {
-        try database.modify("posts") {post in
-            post.parent(User.self)
-        }
-    }
-
-    static func revert(_ database: Database) throws { }
-}
-
-struct AddTimestampToPosts : Preparation {
-    static func prepare(_ database: Database) throws {
-        try database.modify("posts") {post in
-            post.datetime("timestamp", default: dateFormatter.string(from: Date()))
+        try database.modify(Post.self) {posts in
+            posts.date(Post.createdAtKey)
+            posts.date(Post.updatedAtKey)
         }
     }
 

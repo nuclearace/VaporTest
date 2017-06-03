@@ -6,10 +6,11 @@
     window.login = () => {
         $.ajax({
             url: '/api/users/login/',
-            data: JSON.stringify({
-                username: $('#username').val(),
-                password: $('#password').val(),
-            }),
+            beforeSend: (request) => {
+                let b64Auth = btoa(`${$('#username').val()}:${$('#password').val()}`);
+
+                request.setRequestHeader("Authorization", `Basic ${b64Auth}`);
+            },
             type: 'application/json',
             method: 'POST',
             success: () => {

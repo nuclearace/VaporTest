@@ -3,7 +3,7 @@
  */
 
 (function() {
-    let ws = new WebSocket("ws://127.0.0.1:8181/ws");
+    let ws = new WebSocket("ws://127.0.0.1:8080/ws");
 
     ws.onmessage = function(msg) {
         let parsed = JSON.parse(msg.data);
