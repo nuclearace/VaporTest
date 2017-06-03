@@ -24,7 +24,7 @@ final class Gateway : Lockable {
 
     func pingSocket(_ socket: WebSocket) {
         protect {
-            guard sockets.contains(where: { $0 === socket}) else { return }
+            guard sockets.contains(where: { $0 === socket }) else { return }
 
             do {
                 try socket.ping()

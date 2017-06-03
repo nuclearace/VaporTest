@@ -19,7 +19,7 @@
         row.append($('<td/>').text(content));
 
         $('#messageBuffer').append(row);
-        $('#messageContainer').animate({ scrollTop: $('#messageBuffer tr:last').position().top }, 0);
+        $('#messageContainer').animate({ scrollTop: $('#messageBuffer').find('tr:last').position().top }, 0);
     };
 
     window.ws = ws;
