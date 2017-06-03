@@ -56,9 +56,9 @@ extension User : Preparation {
     public class func prepare(_ database: Database) throws {
         try database.create(User.self) {builder in
             builder.id()
-            builder.string("email", length: 256)
+            builder.string("email", length: 256, unique: true)
             builder.string("pw", length: 512)
-            builder.string("username", length: 30)
+            builder.string("username", length: 30, unique: true)
         }
     }
 

@@ -39,8 +39,6 @@ final class Gateway : Lockable {
     }
 
     func post(message: String) {
-        print("sending message")
-
         queue.async {
             let sockets = self.get(self.sockets)
 

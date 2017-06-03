@@ -26,8 +26,7 @@ extension Config {
     private func setupPreparations() throws {
         let preps: [Preparation.Type] = [
             User.self,
-            Post.self,
-            AddTimestampToPost.self
+            Post.self
         ]
 
         preparations += preps
