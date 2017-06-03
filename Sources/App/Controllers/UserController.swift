@@ -38,8 +38,6 @@ final class UserController {
 
         let userPosts = try user.posts.all().map({ try $0.makeJSON() })
 
-        print(userPosts)
-
         return .array(userPosts)
     }
 
